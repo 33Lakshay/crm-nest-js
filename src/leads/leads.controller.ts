@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body } from '@nestjs/common';
+import { Controller, Post, Get, Body, Patch, Param } from '@nestjs/common';
 import { LeadsService } from './leads.service';
 import { createLeadDto } from './dto/create-lead.dto';
 
@@ -11,4 +11,20 @@ export class LeadsController {
     console.log('kakakaka????????', leadDto);
     return this.leadsService.create(leadDto);
   }
+
+  @Get()
+  findAll(){
+    return this.leadsService.findAll();
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: number){
+    return this.leadsService.findOne(Number(id));
+  }
+
+  @Patch()
+  updateLead(){
+    return 'update lead';
+  }
+
 }
