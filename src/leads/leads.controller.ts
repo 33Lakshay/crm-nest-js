@@ -1,6 +1,7 @@
 import { Controller, Post, Get, Body, Patch, Param } from '@nestjs/common';
 import { LeadsService } from './leads.service';
 import { createLeadDto } from './dto/create-lead.dto';
+import { updateLeadDto } from './dto/update-lead.dto';
 
 @Controller('leads')
 export class LeadsController {
@@ -8,7 +9,6 @@ export class LeadsController {
 
   @Post()
   addLead(@Body() leadDto: createLeadDto) {
-    console.log('kakakaka????????', leadDto);
     return this.leadsService.create(leadDto);
   }
 
@@ -22,9 +22,12 @@ export class LeadsController {
     return this.leadsService.findOne(Number(id));
   }
 
-  @Patch()
-  updateLead(){
-    return 'update lead';
+  @Patch(':id')
+  updateLead(
+    @Param('id') id: string,
+    @Body() updateLeadDto: updateLeadDto,
+  ){
+    return this.leadsService.update(Number(id), updateLeadDto);
   }
 
 }

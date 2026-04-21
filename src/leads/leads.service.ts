@@ -1,9 +1,10 @@
-import { Injectable, BadRequestException, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { Injectable, BadRequestException, InternalServerErrorException, NotFoundException, HttpException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Leads } from './leads.entity';
 import { createLeadDto } from './dto/create-lead.dto';
 import { Users } from '../users/user.entity';
+import { updateLeadDto } from './dto/update-lead.dto';
 
 @Injectable()
 export class LeadsService {
@@ -68,5 +69,30 @@ export class LeadsService {
      }
 
      return data;
+  }
+
+  async update(id: number, dto: updateLeadDto){
+    try{
+
+      const lead = await this.leadsRepository.findOne({ 
+                          where: {id}
+                      })
+
+      if(!lead){
+        throw new NotFoundException(`No lead found with id: ${id}`);
+      }
+
+      Object.assign(lead, dto);
+
+      return await this.leadsRepository.save(lead);
+
+    }catch(err){
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.log(err);
+
+      throw new InternalServerErrorException('Something went wrong while updating lead');
+    }
   }
 }
